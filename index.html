@@ -46,16 +46,9 @@
     Play Music
   </button>
 
-  <div class="music-dock" id="musicDock" hidden>
-    <p class="music-dock__label">Now playing</p>
-    <iframe
-      id="musicFrame"
-      class="music-dock__frame"
-      title="Romantic background music"
-      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-      referrerpolicy="strict-origin-when-cross-origin"
-    ></iframe>
-  </div>
+  <audio id="backgroundMusic" preload="metadata" loop>
+    <source src="assets/basin-puhon.mp3" type="audio/mpeg">
+  </audio>
 
   <main class="hero">
     <section class="hero__card reveal" aria-labelledby="mainTitle">

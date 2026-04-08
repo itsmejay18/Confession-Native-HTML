@@ -18,7 +18,6 @@ const CONFESSION_STEPS = [
 
 // Edit this value to personalize the hidden code.
 const SECRET_CODE = "moonlight";
-const YOUTUBE_VIDEO_ID = "EBHOXV1ihus";
 
 const confessionButton = document.getElementById("confessionButton");
 const messagePanel = document.getElementById("messagePanel");
@@ -26,8 +25,7 @@ const messageLabel = document.getElementById("messageLabel");
 const messageText = document.getElementById("messageText");
 const progressDots = document.querySelectorAll(".progress__dot");
 const musicToggle = document.getElementById("musicToggle");
-const musicDock = document.getElementById("musicDock");
-const musicFrame = document.getElementById("musicFrame");
+const backgroundMusic = document.getElementById("backgroundMusic");
 const heartBurst = document.getElementById("heartBurst");
 
 const secretTrigger = document.getElementById("secretTrigger");
@@ -43,10 +41,11 @@ let isTyping = false;
 let typedText = "";
 let lastFocusedElement = null;
 
-let musicFrameHasSource = false;
-
 confessionButton.addEventListener("click", handleConfessionClick);
 musicToggle.addEventListener("click", toggleMusic);
+backgroundMusic.volume = 0.55;
+backgroundMusic.addEventListener("pause", syncMusicButtonState);
+backgroundMusic.addEventListener("play", syncMusicButtonState);
 
 secretTrigger.addEventListener("click", openSecretModal);
 modalClose.addEventListener("click", closeSecretModal);
@@ -210,17 +209,15 @@ function closeSecretModal() {
   }
 }
 
-function toggleMusic() {
+async function toggleMusic() {
   const shouldPlay = !musicToggle.classList.contains("is-playing");
 
   if (shouldPlay) {
-    playMusicFromYouTube();
-    setMusicButtonState(true);
+    await playBackgroundMusic();
     return;
   }
 
-  pauseMusicFromYouTube();
-  setMusicButtonState(false);
+  pauseBackgroundMusic();
 }
 
 function setMusicButtonState(isPlaying) {
@@ -229,25 +226,21 @@ function setMusicButtonState(isPlaying) {
   musicToggle.setAttribute("aria-pressed", String(isPlaying));
 }
 
-function playMusicFromYouTube() {
-  musicDock.hidden = false;
-  musicFrame.src = buildYouTubeEmbedUrl();
-  musicFrameHasSource = true;
-}
-
-function pauseMusicFromYouTube() {
-  if (!musicFrameHasSource) {
-    musicDock.hidden = true;
-    return;
+async function playBackgroundMusic() {
+  try {
+    await backgroundMusic.play();
+  } catch (error) {
+    setMusicButtonState(false);
+    musicToggle.textContent = "Tap Again";
   }
-
-  musicFrame.removeAttribute("src");
-  musicFrameHasSource = false;
-  musicDock.hidden = true;
 }
 
-function buildYouTubeEmbedUrl() {
-  return `https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?autoplay=1&playsinline=1&controls=1&loop=1&playlist=${YOUTUBE_VIDEO_ID}&rel=0&modestbranding=1`;
+function pauseBackgroundMusic() {
+  backgroundMusic.pause();
+}
+
+function syncMusicButtonState() {
+  setMusicButtonState(!backgroundMusic.paused);
 }
 
 function launchHeartBurst() {
