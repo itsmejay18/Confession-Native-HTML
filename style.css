@@ -308,6 +308,23 @@ button {
   z-index: 2;
 }
 
+.youtube-player-shell {
+  position: fixed;
+  top: 0;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.youtube-player-shell__frame {
+  width: 1px;
+  height: 1px;
+  border: 0;
+}
+
 .music-toggle {
   right: 1rem;
   bottom: 1rem;

@@ -18,6 +18,7 @@ const CONFESSION_STEPS = [
 
 // Edit this value to personalize the hidden code.
 const SECRET_CODE = "moonlight";
+const YOUTUBE_VIDEO_ID = "EBHOXV1ihus";
 
 const confessionButton = document.getElementById("confessionButton");
 const messagePanel = document.getElementById("messagePanel");
@@ -25,6 +26,7 @@ const messageLabel = document.getElementById("messageLabel");
 const messageText = document.getElementById("messageText");
 const progressDots = document.querySelectorAll(".progress__dot");
 const musicToggle = document.getElementById("musicToggle");
+const musicFrame = document.getElementById("musicFrame");
 const heartBurst = document.getElementById("heartBurst");
 
 const secretTrigger = document.getElementById("secretTrigger");
@@ -40,22 +42,12 @@ let isTyping = false;
 let typedText = "";
 let lastFocusedElement = null;
 
-let audioContext = null;
-let masterGain = null;
-let filterNode = null;
-let activePadNodes = [];
-let chordTimer = null;
-let chordIndex = 0;
-
-const CHORDS = [
-  [261.63, 329.63, 392.0],
-  [220.0, 277.18, 329.63],
-  [246.94, 311.13, 392.0],
-  [196.0, 246.94, 293.66],
-];
+let musicFrameReady = false;
+let musicFrameHasSource = false;
 
 confessionButton.addEventListener("click", handleConfessionClick);
 musicToggle.addEventListener("click", toggleMusic);
+musicFrame.addEventListener("load", handleMusicFrameLoad);
 
 secretTrigger.addEventListener("click", openSecretModal);
 modalClose.addEventListener("click", closeSecretModal);
@@ -219,123 +211,86 @@ function closeSecretModal() {
   }
 }
 
-async function toggleMusic() {
-  const Context = window.AudioContext || window.webkitAudioContext;
-
-  if (!Context) {
-    musicToggle.textContent = "Music Unavailable";
-    musicToggle.disabled = true;
-    return;
-  }
-
-  if (!audioContext) {
-    setupAudio(new Context());
-  }
-
+function toggleMusic() {
   const shouldPlay = !musicToggle.classList.contains("is-playing");
 
   if (shouldPlay) {
-    if (audioContext.state === "suspended") {
-      await audioContext.resume();
-    }
-
-    startChordLoop();
+    playMusicFromYouTube();
     setMusicButtonState(true);
     return;
   }
 
-  stopChordLoop();
-
-  if (audioContext.state === "running") {
-    await audioContext.suspend();
-  }
-
+  pauseMusicFromYouTube();
   setMusicButtonState(false);
-}
-
-function setupAudio(context) {
-  audioContext = context;
-  masterGain = audioContext.createGain();
-  filterNode = audioContext.createBiquadFilter();
-
-  masterGain.gain.value = 0.055;
-  filterNode.type = "lowpass";
-  filterNode.frequency.value = 850;
-  filterNode.Q.value = 0.35;
-
-  filterNode.connect(masterGain);
-  masterGain.connect(audioContext.destination);
-}
-
-function startChordLoop() {
-  stopChordLoop();
-  playChord(CHORDS[chordIndex % CHORDS.length]);
-  chordTimer = window.setInterval(() => {
-    chordIndex = (chordIndex + 1) % CHORDS.length;
-    playChord(CHORDS[chordIndex]);
-  }, 3600);
-}
-
-function stopChordLoop() {
-  if (chordTimer) {
-    window.clearInterval(chordTimer);
-    chordTimer = null;
-  }
-
-  fadeOutPad();
-}
-
-function playChord(frequencies) {
-  if (!audioContext || !masterGain || !filterNode) {
-    return;
-  }
-
-  fadeOutPad();
-
-  const now = audioContext.currentTime;
-
-  activePadNodes = frequencies.map((frequency, index) => {
-    const oscillator = audioContext.createOscillator();
-    const noteGain = audioContext.createGain();
-
-    oscillator.type = index === 1 ? "triangle" : "sine";
-    oscillator.frequency.value = frequency;
-    oscillator.detune.value = index === 2 ? 6 : index === 0 ? -4 : 0;
-
-    noteGain.gain.setValueAtTime(0.0001, now);
-    noteGain.gain.linearRampToValueAtTime(0.016, now + 1.25);
-    noteGain.gain.linearRampToValueAtTime(0.012, now + 3.1);
-
-    oscillator.connect(noteGain);
-    noteGain.connect(filterNode);
-    oscillator.start(now);
-
-    return { oscillator, noteGain };
-  });
-}
-
-function fadeOutPad() {
-  if (!audioContext || activePadNodes.length === 0) {
-    activePadNodes = [];
-    return;
-  }
-
-  const now = audioContext.currentTime;
-
-  activePadNodes.forEach(({ oscillator, noteGain }) => {
-    noteGain.gain.cancelScheduledValues(now);
-    noteGain.gain.setValueAtTime(noteGain.gain.value, now);
-    noteGain.gain.linearRampToValueAtTime(0.0001, now + 0.65);
-    oscillator.stop(now + 0.7);
-  });
-
-  activePadNodes = [];
 }
 
 function setMusicButtonState(isPlaying) {
   musicToggle.textContent = isPlaying ? "Pause Music" : "Play Music";
   musicToggle.classList.toggle("is-playing", isPlaying);
   musicToggle.setAttribute("aria-pressed", String(isPlaying));
+}
+
+function playMusicFromYouTube() {
+  if (!musicFrameHasSource) {
+    musicFrameReady = false;
+    musicFrame.src = buildYouTubeEmbedUrl(true);
+    musicFrameHasSource = true;
+    return;
+  }
+
+  if (!musicFrameReady) {
+    musicFrame.src = buildYouTubeEmbedUrl(true);
+    return;
+  }
+
+  postYouTubeCommand("playVideo");
+}
+
+function pauseMusicFromYouTube() {
+  if (!musicFrameHasSource) {
+    return;
+  }
+
+  if (!musicFrameReady) {
+    musicFrame.removeAttribute("src");
+    musicFrameHasSource = false;
+    return;
+  }
+
+  postYouTubeCommand("pauseVideo");
+}
+
+function handleMusicFrameLoad() {
+  musicFrameReady = true;
+
+  if (musicToggle.classList.contains("is-playing")) {
+    window.setTimeout(() => {
+      postYouTubeCommand("playVideo");
+    }, 350);
+  }
+}
+
+function buildYouTubeEmbedUrl(autoplay) {
+  const origin = window.location.origin && window.location.origin !== "null"
+    ? `&origin=${encodeURIComponent(window.location.origin)}`
+    : "";
+
+  return `https://www.youtube-nocookie.com/embed/${YOUTUBE_VIDEO_ID}?enablejsapi=1&playsinline=1&controls=0&loop=1&playlist=${YOUTUBE_VIDEO_ID}&modestbranding=1&rel=0&autoplay=${autoplay ? 1 : 0}${origin}`;
+}
+
+function postYouTubeCommand(command) {
+  if (!musicFrame.contentWindow) {
+    return;
+  }
+
+  musicFrame.contentWindow.postMessage(
+    JSON.stringify({
+      event: "command",
+      func: command,
+      args: [],
+    }),
+    "*",
+  );
 }
 
 function launchHeartBurst() {

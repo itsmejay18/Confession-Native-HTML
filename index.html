@@ -46,6 +46,17 @@
     Play Music
   </button>
 
+  <div class="youtube-player-shell" aria-hidden="true">
+    <iframe
+      id="musicFrame"
+      class="youtube-player-shell__frame"
+      title="Background music player"
+      allow="autoplay; encrypted-media; picture-in-picture"
+      referrerpolicy="strict-origin-when-cross-origin"
+      tabindex="-1"
+    ></iframe>
+  </div>
+
   <main class="hero">
     <section class="hero__card reveal" aria-labelledby="mainTitle">
       <p class="hero__eyebrow">For someone special</p>
