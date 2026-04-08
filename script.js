@@ -26,6 +26,7 @@ const messageLabel = document.getElementById("messageLabel");
 const messageText = document.getElementById("messageText");
 const progressDots = document.querySelectorAll(".progress__dot");
 const musicToggle = document.getElementById("musicToggle");
+const musicDock = document.getElementById("musicDock");
 const musicFrame = document.getElementById("musicFrame");
 const heartBurst = document.getElementById("heartBurst");
 
@@ -42,12 +43,10 @@ let isTyping = false;
 let typedText = "";
 let lastFocusedElement = null;
 
-let musicFrameReady = false;
 let musicFrameHasSource = false;
 
 confessionButton.addEventListener("click", handleConfessionClick);
 musicToggle.addEventListener("click", toggleMusic);
-musicFrame.addEventListener("load", handleMusicFrameLoad);
 
 secretTrigger.addEventListener("click", openSecretModal);
 modalClose.addEventListener("click", closeSecretModal);
@@ -231,66 +230,24 @@ function setMusicButtonState(isPlaying) {
 }
 
 function playMusicFromYouTube() {
-  if (!musicFrameHasSource) {
-    musicFrameReady = false;
-    musicFrame.src = buildYouTubeEmbedUrl(true);
-    musicFrameHasSource = true;
-    return;
-  }
-
-  if (!musicFrameReady) {
-    musicFrame.src = buildYouTubeEmbedUrl(true);
-    return;
-  }
-
-  postYouTubeCommand("playVideo");
+  musicDock.hidden = false;
+  musicFrame.src = buildYouTubeEmbedUrl();
+  musicFrameHasSource = true;
 }
 
 function pauseMusicFromYouTube() {
   if (!musicFrameHasSource) {
+    musicDock.hidden = true;
     return;
   }
 
-  if (!musicFrameReady) {
-    musicFrame.removeAttribute("src");
-    musicFrameHasSource = false;
-    return;
-  }
-
-  postYouTubeCommand("pauseVideo");
+  musicFrame.removeAttribute("src");
+  musicFrameHasSource = false;
+  musicDock.hidden = true;
 }
 
-function handleMusicFrameLoad() {
-  musicFrameReady = true;
-
-  if (musicToggle.classList.contains("is-playing")) {
-    window.setTimeout(() => {
-      postYouTubeCommand("playVideo");
-    }, 350);
-  }
-}
-
-function buildYouTubeEmbedUrl(autoplay) {
-  const origin = window.location.origin && window.location.origin !== "null"
-    ? `&origin=${encodeURIComponent(window.location.origin)}`
-    : "";
-
-  return `https://www.youtube-nocookie.com/embed/${YOUTUBE_VIDEO_ID}?enablejsapi=1&playsinline=1&controls=0&loop=1&playlist=${YOUTUBE_VIDEO_ID}&modestbranding=1&rel=0&autoplay=${autoplay ? 1 : 0}${origin}`;
-}
-
-function postYouTubeCommand(command) {
-  if (!musicFrame.contentWindow) {
-    return;
-  }
-
-  musicFrame.contentWindow.postMessage(
-    JSON.stringify({
-      event: "command",
-      func: command,
-      args: [],
-    }),
-    "*",
-  );
+function buildYouTubeEmbedUrl() {
+  return `https://www.youtube.com/embed/${YOUTUBE_VIDEO_ID}?autoplay=1&playsinline=1&controls=1&loop=1&playlist=${YOUTUBE_VIDEO_ID}&rel=0&modestbranding=1`;
 }
 
 function launchHeartBurst() {
