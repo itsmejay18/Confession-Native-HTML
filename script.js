@@ -11,12 +11,12 @@ const CONFESSION_STEPS = [
   },
   {
     label: "Step 3 of 4",
-    text: "Sa una, friend ra gyud akong tan-aw nimo. Wala koy lain nga intensyon. Pero kadugayan, sa matag istorya nato, sa matag katawa, nahulog ko nimo.\n\nWala ko kabantay nga nalahi na diay akong pagbati nimo.\n\nKung dili ta magkaistorya, murag naay kulang sa akong adlaw. Kung makita tika, kalit ra ko malipay.\n\nUg karon\u2026 dili na nako kaya i-deny.\n\nNahulog ko nimo.\n\nDili tuyo, dili plano\u2026 pero tinuod.",
+    text: "Sa una, friend ra gyud akong tan-aw nimo. Wala koy lain nga intensyon. Pero kadugayan, sa matag istorya nato, sa matag katawa, na inlab nako nimo.\n\nWala ko kabantay nga nalahi na diay akong pagbati nimo.\n\nKung dili ta magkaistorya, murag naay kulang sa akong adlaw. Kung makita tika, kalit ra ko malipay.\n\nUg karon\u2026 dili na nako kaya i-deny.\n\nNa inlab nako nimo.\n\nDili tuyo, dili plano\u2026 pero tinuod.",
     mode: "fade",
   },
   {
     label: "Final Step",
-    text: "NAHULOG KO NIMO <span class=\"heart\">&#10084;&#65039;</span>",
+    text: "NA INLAB NAKO NIMO <span class=\"heart\">&#10084;&#65039;</span>",
     mode: "final",
   },
 ];
