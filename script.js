@@ -44,6 +44,8 @@ let typingTimeout = null;
 let isTyping = false;
 let typedText = "";
 let lastFocusedElement = null;
+let hasAutoStartedMusic = false;
+let userPausedMusic = false;
 
 backgroundMusic.volume = 0.55;
 
@@ -85,6 +87,11 @@ secretForm.addEventListener("submit", (event) => {
 });
 
 function handleConfessionClick() {
+  if (!hasAutoStartedMusic && !userPausedMusic) {
+    hasAutoStartedMusic = true;
+    void playBackgroundMusic(true);
+  }
+
   if (isTyping) {
     finishTyping();
     return;
@@ -223,18 +230,26 @@ async function toggleMusic() {
   const shouldPlay = !musicToggle.classList.contains("is-playing");
 
   if (shouldPlay) {
+    userPausedMusic = false;
     await playBackgroundMusic();
     return;
   }
 
+  userPausedMusic = true;
   pauseBackgroundMusic();
 }
 
-async function playBackgroundMusic() {
+async function playBackgroundMusic(isAutoStart = false) {
   try {
     await backgroundMusic.play();
   } catch (error) {
     setMusicButtonState(false);
+
+    if (isAutoStart) {
+      hasAutoStartedMusic = false;
+      return;
+    }
+
     musicToggle.textContent = "Tap Again";
   }
 }
