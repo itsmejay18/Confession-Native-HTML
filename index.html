@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Little Confession</title>
+  <meta
+    name="description"
+    content="A romantic, interactive confession website with smooth animations, music controls, and a hidden secret."
+  >
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap"
+    rel="stylesheet"
+  >
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="page-bg" aria-hidden="true">
+    <div class="page-bg__stars"></div>
+    <div class="page-bg__glow page-bg__glow--left"></div>
+    <div class="page-bg__glow page-bg__glow--right"></div>
+    <div class="floating-hearts">
+      <span style="--left: 8%; --delay: 0s; --duration: 13s;">❤</span>
+      <span style="--left: 20%; --delay: 2s; --duration: 15s;">❤</span>
+      <span style="--left: 34%; --delay: 6s; --duration: 16s;">❤</span>
+      <span style="--left: 52%; --delay: 1s; --duration: 14s;">❤</span>
+      <span style="--left: 68%; --delay: 5s; --duration: 17s;">❤</span>
+      <span style="--left: 82%; --delay: 3s; --duration: 15s;">❤</span>
+      <span style="--left: 92%; --delay: 7s; --duration: 18s;">❤</span>
+    </div>
+  </div>
+
+  <button
+    class="secret-trigger"
+    id="secretTrigger"
+    type="button"
+    aria-label="Open the secret code modal"
+    title="A tiny secret"
+  >
+    ♡
+  </button>
+
+  <button class="music-toggle" id="musicToggle" type="button" aria-pressed="false">
+    Play Music
+  </button>
+
+  <main class="hero">
+    <section class="hero__card reveal" aria-labelledby="mainTitle">
+      <p class="hero__eyebrow">For someone special</p>
+      <h1 class="hero__title" id="mainTitle">Hey... I have something to tell you 👀</h1>
+      <p class="hero__subtitle">
+        Tap through this little moment. It only reveals itself one step at a time.
+      </p>
+
+      <div class="hero__actions">
+        <button class="primary-button" id="confessionButton" type="button">Click me</button>
+      </div>
+
+      <div class="progress" aria-label="Confession progress">
+        <span class="progress__dot" data-dot="0"></span>
+        <span class="progress__dot" data-dot="1"></span>
+        <span class="progress__dot" data-dot="2"></span>
+      </div>
+
+      <section class="message-panel" id="messagePanel" hidden aria-live="polite">
+        <p class="message-panel__label" id="messageLabel">Step 1 of 3</p>
+        <p class="message-panel__text" id="messageText"></p>
+      </section>
+    </section>
+  </main>
+
+  <div class="heart-burst" id="heartBurst" aria-hidden="true"></div>
+
+  <div class="modal" id="secretModal" hidden>
+    <div class="modal__backdrop" data-close-modal="true"></div>
+
+    <div
+      class="modal__dialog"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="secretTitle"
+      aria-describedby="secretDescription"
+    >
+      <button class="modal__close" id="modalClose" type="button" aria-label="Close modal">
+        ×
+      </button>
+
+      <p class="modal__eyebrow">Hidden message</p>
+      <h2 class="modal__title" id="secretTitle">Enter the secret code</h2>
+      <p class="modal__description" id="secretDescription">
+        If you know the code, there is one more thing waiting inside.
+      </p>
+
+      <form class="modal__form" id="secretForm">
+        <label class="sr-only" for="secretInput">Enter the secret code</label>
+        <input
+          class="modal__input"
+          id="secretInput"
+          name="secret"
+          type="password"
+          inputmode="text"
+          autocomplete="off"
+          placeholder="Type the code"
+          required
+        >
+        <button class="secondary-button" type="submit">Unlock</button>
+      </form>
+
+      <p class="modal__feedback" id="secretFeedback" aria-live="polite"></p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
