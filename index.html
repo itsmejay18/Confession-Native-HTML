@@ -1,17 +1,17 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ceb">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>A Little Confession</title>
+  <title>Confession para Nimo</title>
   <meta
     name="description"
-    content="A romantic, interactive confession website with smooth animations, music controls, and a hidden secret."
+    content="Usa ka romantic ug mobile-first nga Bisaya confession website nga adunay smooth nga step-by-step reveal."
   >
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link
-    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Playfair+Display:wght@600;700;800&display=swap"
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
     rel="stylesheet"
   >
   <link rel="stylesheet" href="style.css">
@@ -22,13 +22,12 @@
     <div class="page-bg__glow page-bg__glow--left"></div>
     <div class="page-bg__glow page-bg__glow--right"></div>
     <div class="floating-hearts">
-      <span style="--left: 8%; --delay: 0s; --duration: 13s;">❤</span>
-      <span style="--left: 20%; --delay: 2s; --duration: 15s;">❤</span>
-      <span style="--left: 34%; --delay: 6s; --duration: 16s;">❤</span>
-      <span style="--left: 52%; --delay: 1s; --duration: 14s;">❤</span>
-      <span style="--left: 68%; --delay: 5s; --duration: 17s;">❤</span>
-      <span style="--left: 82%; --delay: 3s; --duration: 15s;">❤</span>
-      <span style="--left: 92%; --delay: 7s; --duration: 18s;">❤</span>
+      <span style="--left: 7%; --delay: 0s; --duration: 14s;">&#10084;</span>
+      <span style="--left: 21%; --delay: 3s; --duration: 16s;">&#10084;</span>
+      <span style="--left: 39%; --delay: 6s; --duration: 15s;">&#10084;</span>
+      <span style="--left: 58%; --delay: 1.5s; --duration: 17s;">&#10084;</span>
+      <span style="--left: 77%; --delay: 4.5s; --duration: 14s;">&#10084;</span>
+      <span style="--left: 92%; --delay: 2s; --duration: 18s;">&#10084;</span>
     </div>
   </div>
 
@@ -37,41 +36,44 @@
     id="secretTrigger"
     type="button"
     aria-label="Open the secret code modal"
-    title="A tiny secret"
+    title="Naay sikreto diri"
   >
-    ♡
+    &#9825;
   </button>
 
   <button class="music-toggle" id="musicToggle" type="button" aria-pressed="false">
     Play Music
   </button>
 
-  <audio id="backgroundMusic" preload="metadata" loop>
+  <audio id="backgroundMusic" preload="metadata" loop playsinline>
     <source src="assets/basin-puhon.mp3" type="audio/mpeg">
   </audio>
 
   <main class="hero">
-    <section class="hero__card reveal" aria-labelledby="mainTitle">
-      <p class="hero__eyebrow">For someone special</p>
-      <h1 class="hero__title" id="mainTitle">Hey... I have something to tell you 👀</h1>
-      <p class="hero__subtitle">
-        Tap through this little moment. It only reveals itself one step at a time.
+    <section class="story-card reveal" aria-labelledby="mainTitle">
+      <p class="story-card__eyebrow">Para sa usa ka espesyal nga tawo</p>
+      <h1 class="story-card__title" id="mainTitle">
+        Hey... naa koy gustong isulti &#128064;
+      </h1>
+      <p class="story-card__subtitle">
+        Hinay-hinay lang. Usa-usa ni nga mugawas gikan sa akong kasingkasing.
       </p>
-
-      <div class="hero__actions">
-        <button class="primary-button" id="confessionButton" type="button">Click me</button>
-      </div>
 
       <div class="progress" aria-label="Confession progress">
         <span class="progress__dot" data-dot="0"></span>
         <span class="progress__dot" data-dot="1"></span>
         <span class="progress__dot" data-dot="2"></span>
+        <span class="progress__dot" data-dot="3"></span>
       </div>
 
-      <section class="message-panel" id="messagePanel" hidden aria-live="polite">
-        <p class="message-panel__label" id="messageLabel">Step 1 of 3</p>
-        <p class="message-panel__text" id="messageText"></p>
+      <section class="story-panel" id="storyPanel" hidden aria-live="polite">
+        <p class="story-panel__step" id="storyStep">Step 1 of 4</p>
+        <p class="story-panel__text" id="storyText"></p>
       </section>
+
+      <div class="story-card__actions">
+        <button class="primary-button" id="confessionButton" type="button">Click me</button>
+      </div>
     </section>
   </main>
 
@@ -88,17 +90,17 @@
       aria-describedby="secretDescription"
     >
       <button class="modal__close" id="modalClose" type="button" aria-label="Close modal">
-        ×
+        &times;
       </button>
 
-      <p class="modal__eyebrow">Hidden message</p>
-      <h2 class="modal__title" id="secretTitle">Enter the secret code</h2>
+      <p class="modal__eyebrow">Tinagong mensahe</p>
+      <h2 class="modal__title" id="secretTitle">Enter secret code</h2>
       <p class="modal__description" id="secretDescription">
-        If you know the code, there is one more thing waiting inside.
+        Kung kabalo ka sa code, naa pay usa ka mensahe nga gitago para nimo.
       </p>
 
       <form class="modal__form" id="secretForm">
-        <label class="sr-only" for="secretInput">Enter the secret code</label>
+        <label class="sr-only" for="secretInput">Enter secret code</label>
         <input
           class="modal__input"
           id="secretInput"
@@ -106,10 +108,10 @@
           type="password"
           inputmode="text"
           autocomplete="off"
-          placeholder="Type the code"
+          placeholder="Ibutang ang code"
           required
         >
-        <button class="secondary-button" type="submit">Unlock</button>
+        <button class="secondary-button" type="submit">Open</button>
       </form>
 
       <p class="modal__feedback" id="secretFeedback" aria-live="polite"></p>
